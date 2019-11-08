@@ -1,5 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
+
+import logo from 'images/logo.svg';
+import Home from 'containers/Home';
+
 import './App.css';
 
 function App() {
@@ -18,6 +21,7 @@ function App() {
         >
           Learn React
         </a>
+        <Home />
       </header>
     </div>
   );
