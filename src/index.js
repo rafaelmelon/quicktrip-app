@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { App } from 'containers';
 import './index.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 import * as serviceWorker from './serviceWorker';
 
