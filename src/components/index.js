@@ -1,7 +1,9 @@
-import Loader from "./Loader";
-import Map from "./Map";
 import Button from "./Button";
+import Card from "./Card";
+import Input from "./Input";
+import Loader from "./Loader";
 
-export { Loader };
-export { Map };
 export { Button };
+export { Card };
+export { Input };
+export { Loader };

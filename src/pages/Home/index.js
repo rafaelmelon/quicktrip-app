@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Map, Button } from "components";
+import { Button } from "components";
+import { Map } from "containers";
 
 import { Container } from "./styles";
 
