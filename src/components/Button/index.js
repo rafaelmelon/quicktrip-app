@@ -1,11 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import Button from '@material-ui/core/Button';
+import { CustomButton } from "./styles";
 
-const CustomButton = () => (
-  <Button variant="contained" color="primary">
-      Hello World
-    </Button>
-);
+const Button = ({ children, disabled, onClick, ...rest }) => {
+  return (
+    <CustomButton {...rest} disabled={disabled} onClick={onClick}>
+      {children}
+    </CustomButton>
+  );
+};
 
-export default CustomButton;
+export default Button;

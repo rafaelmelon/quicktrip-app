@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { Map, Button } from 'components';
+import { Map, Button } from "components";
 
 import { Container } from "./styles";
 
@@ -12,6 +12,6 @@ const Home = () => {
       <Map />
     </Container>
   );
-}
+};
 
 export default Home;
