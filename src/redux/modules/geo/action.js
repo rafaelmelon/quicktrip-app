@@ -4,10 +4,10 @@ import {
   GEO_SET_CURRENT_POSITION,
   GEO_SET_AUTOCOMPLETE_RESPONSE,
   GEO_SET_AUTOCOMPLETE_FETCHING,
-  GEO_SET_AUTOCOMPLETE_ERROR
+  GEO_SET_AUTOCOMPLETE_ERROR,
+  GEO_SET_PLACE
 } from "./constant";
 
-import { API_URL, API_KEY_PLACES } from "constants/api";
 import { request, requestJSON } from "utils/fetch";
 
 export const setInitialPosition = payload => ({
@@ -39,9 +39,14 @@ export const fetchAutocompleteError = error => ({
   error
 });
 
-export const fetchAutocomplete = () => dispatch => {
+export const fetchAutocomplete = payload => dispatch => {
   dispatch(fetchAutocompleteRequest());
-  request("/hey")
+  request(`places/${payload}`)
     .then(json => dispatch(fetchAutocompleteResponse(json)))
     .catch(error => dispatch(fetchAutocompleteError(error)));
 };
+
+export const setPlace = payload => ({
+  type: GEO_SET_PLACE,
+  payload
+});

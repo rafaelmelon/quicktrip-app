@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { inputType } from "types/forms";
 
-import { Container, Label, CustomInput, Icon } from "./styles";
+import { Container, Label, StyledInput, Icon } from "./styles";
 
 const Input = ({
   type,
@@ -17,7 +17,7 @@ const Input = ({
 }) => (
   <Container>
     {!!label && <Label>{label}</Label>}
-    <CustomInput {...input} {...{ type, placeholder, disabled }} />
+    <StyledInput {...input} {...{ type, placeholder, disabled }} />
     {icon && <Icon>{icon}</Icon>}
   </Container>
 );

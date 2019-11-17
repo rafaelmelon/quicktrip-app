@@ -8,7 +8,8 @@ import {
   STATE_GEO_AUTOCOMPLETE,
   STATE_GEO_RESPONSE,
   STATE_GEO_ERROR,
-  STATE_GEO_FETCHING
+  STATE_GEO_FETCHING,
+  STATE_GEO_PLACE
 } from "./constant";
 
 export const initialState = fromJS({
@@ -25,5 +26,6 @@ export const initialState = fromJS({
     [STATE_GEO_RESPONSE]: [],
     [STATE_GEO_FETCHING]: false,
     [STATE_GEO_ERROR]: null
-  }
+  },
+  [STATE_GEO_PLACE]: {}
 });

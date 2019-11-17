@@ -1,3 +1,11 @@
+import { API_QUICKTRIP_DEV, API_QUICKTRIP_PROD } from "constants/api";
+
+const LOCAL_DOMAINS = ["localhost", "127.0.0.1", ""];
+
+const API = LOCAL_DOMAINS.includes(window.location.hostname)
+  ? API_QUICKTRIP_DEV
+  : API_QUICKTRIP_PROD;
+
 export const request = (url, options = {}) => {
   const settings = {
     headers: {
@@ -7,7 +15,7 @@ export const request = (url, options = {}) => {
     ...options
   };
 
-  return fetch(url, settings).then(response => {
+  return fetch(`${API}/${url}`, settings).then(response => {
     return response.json();
   });
 };
@@ -18,7 +26,7 @@ export const requestJSON = (url, options = {}) => {
     ...options
   };
 
-  return fetch(url, settings).then(response => {
+  return fetch(`${API}/${url}`, settings).then(response => {
     return response.json();
   });
 };

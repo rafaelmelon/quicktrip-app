@@ -4,7 +4,14 @@ import ImmutablePropTypes from "immutable-prop-types";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { fetchAutocomplete, selectorAutocomplete } from "redux/modules/geo";
+import {
+  fetchAutocomplete,
+  setPlace,
+  selectorAutocompleteResponse,
+  selectorAutocompleteFetching,
+  selectorAutocompleteError,
+  selectorPlace
+} from "redux/modules/geo";
 
 import { Navbar as NavbarComponent } from "components";
 
@@ -12,24 +19,50 @@ class Navbar extends Component {
   componentDidMount() {}
 
   render() {
-    const { fetchAutocomplete } = this.props;
+    const {
+      fetchAutocomplete,
+      autocompleteResponse,
+      autocompleteFetching,
+      autocompleteError,
+      place
+    } = this.props;
 
-    return <NavbarComponent {...{ fetchAutocomplete }} />;
+    return (
+      <NavbarComponent
+        {...{
+          fetchAutocomplete,
+          autocompleteResponse,
+          autocompleteFetching,
+          autocompleteError,
+          setPlace,
+          place
+        }}
+      />
+    );
   }
 }
 
 Navbar.propTypes = {
-  autocomplete: ImmutablePropTypes.list
+  fetchAutocomplete: PropTypes.func.isRequired,
+  autocompleteResponse: ImmutablePropTypes.list.isRequired,
+  autocompleteFetching: PropTypes.bool.isRequired,
+  autocompleteError: ImmutablePropTypes.map,
+  setPlace: PropTypes.func.isRequired,
+  place: ImmutablePropTypes.map.isRequired
 };
 
 const mapStateToProps = state => ({
-  autocomplete: selectorAutocomplete(state)
+  autocompleteResponse: selectorAutocompleteResponse(state),
+  autocompleteFetching: selectorAutocompleteFetching(state),
+  autocompleteError: selectorAutocompleteError(state),
+  place: selectorPlace(state)
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchAutocomplete
+      fetchAutocomplete,
+      setPlace
     },
     dispatch
   );

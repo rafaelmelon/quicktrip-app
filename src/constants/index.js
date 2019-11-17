@@ -1,5 +1,3 @@
-export const API_URL = "https://rafaelmelon-api.herokuapp.com";
-
 export const VIEWPORT_SIZES = {
   desktop: 992,
   tablet: 768,
