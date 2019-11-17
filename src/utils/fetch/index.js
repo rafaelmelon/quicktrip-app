@@ -7,22 +7,12 @@ const API = LOCAL_DOMAINS.includes(window.location.hostname)
   : API_QUICKTRIP_PROD;
 
 export const request = (url, options = {}) => {
+  const headers = new Headers();
   const settings = {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    ...options
-  };
-
-  return fetch(`${API}/${url}`, settings).then(response => {
-    return response.json();
-  });
-};
-
-export const requestJSON = (url, options = {}) => {
-  const settings = {
-    headers: {},
+    method: "GET",
+    headers,
+    mode: "cors",
+    cache: "default",
     ...options
   };
 
