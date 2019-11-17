@@ -13,7 +13,7 @@ import {
   selectorCurrentPosition
 } from "redux/modules/geo";
 
-import { Map } from "components";
+import { Map, Carousel } from "components";
 
 class Home extends Component {
   componentDidMount() {
@@ -42,7 +42,10 @@ class Home extends Component {
     const { initialPosition, currentPosition, setCurrentPosition } = this.props;
 
     return (
-      <Map {...{ initialPosition, currentPosition, setCurrentPosition }} />
+      <>
+        <Map {...{ initialPosition, currentPosition, setCurrentPosition }} />
+        <Carousel />
+      </>
     );
   }
 }

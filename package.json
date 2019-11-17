@@ -2,6 +2,7 @@
   "name": "quicktrip-app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "express": "^4.17.1",
     "express-favicon": "^2.0.1",
