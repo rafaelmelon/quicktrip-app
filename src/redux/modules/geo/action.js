@@ -5,6 +5,7 @@ import {
   GEO_SET_AUTOCOMPLETE_RESPONSE,
   GEO_SET_AUTOCOMPLETE_FETCHING,
   GEO_SET_AUTOCOMPLETE_ERROR,
+  GEO_RESET_AUTOCOMPLETE,
   GEO_SET_PLACE
 } from "./constant";
 
@@ -37,6 +38,11 @@ export const fetchAutocompleteResponse = payload => ({
 export const fetchAutocompleteError = error => ({
   type: GEO_SET_AUTOCOMPLETE_ERROR,
   error
+});
+
+export const resetAutocomplete = payload => ({
+  type: GEO_RESET_AUTOCOMPLETE,
+  payload
 });
 
 export const fetchAutocomplete = payload => dispatch => {

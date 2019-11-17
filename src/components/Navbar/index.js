@@ -10,6 +10,7 @@ import { Container, Suggestions, Suggestion } from "./styles";
 
 const Navbar = ({
   fetchAutocomplete,
+  resetAutocomplete,
   autocompleteResponse,
   autocompleteFetching,
   autocompleteError,
@@ -25,12 +26,10 @@ const Navbar = ({
     }
   };
 
-  const renderSuggestions = () => {
-    return autocompleteResponse.map(item => (
-      <Suggestion key={item.get("description")} onClick={() => setPlace(item)}>
-        {item.get("description")}
-      </Suggestion>
-    ));
+  const handleClick = item => {
+    setPlace(item);
+    setValue(item.get("description"));
+    resetAutocomplete();
   };
 
   const isAutocomplete = isListContain(autocompleteResponse);
@@ -44,19 +43,31 @@ const Navbar = ({
             onChange: handleChange,
             value
           }}
-          placeholder={place.get("description")}
+          placeholder={place.get("description") || "Search location"}
         />
       </Container>
-      {isAutocomplete && <Suggestions>{renderSuggestions()}</Suggestions>}
+      {isAutocomplete && (
+        <Suggestions>
+          {autocompleteResponse.map(item => (
+            <Suggestion
+              key={item.get("description")}
+              onClick={() => handleClick(item)}
+            >
+              {item.get("description")}
+            </Suggestion>
+          ))}
+        </Suggestions>
+      )}
     </>
   );
 };
 
 Navbar.propTypes = {
   fetchAutocomplete: PropTypes.func.isRequired,
+  resetAutocomplete: PropTypes.func.isRequired,
   autocompleteResponse: ImmutablePropTypes.list.isRequired,
   autocompleteFetching: PropTypes.bool.isRequired,
-  autocompleteError: ImmutablePropTypes.map,
+  autocompleteError: PropTypes.oneOfType([ImmutablePropTypes.map, null]),
   setPlace: PropTypes.func.isRequired,
   place: ImmutablePropTypes.map.isRequired
 };

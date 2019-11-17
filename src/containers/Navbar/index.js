@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 
 import {
   fetchAutocomplete,
+  resetAutocomplete,
   setPlace,
   selectorAutocompleteResponse,
   selectorAutocompleteFetching,
@@ -21,9 +22,11 @@ class Navbar extends Component {
   render() {
     const {
       fetchAutocomplete,
+      resetAutocomplete,
       autocompleteResponse,
       autocompleteFetching,
       autocompleteError,
+      setPlace,
       place
     } = this.props;
 
@@ -31,6 +34,7 @@ class Navbar extends Component {
       <NavbarComponent
         {...{
           fetchAutocomplete,
+          resetAutocomplete,
           autocompleteResponse,
           autocompleteFetching,
           autocompleteError,
@@ -44,9 +48,10 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
   fetchAutocomplete: PropTypes.func.isRequired,
+  resetAutocomplete: PropTypes.func.isRequired,
   autocompleteResponse: ImmutablePropTypes.list.isRequired,
   autocompleteFetching: PropTypes.bool.isRequired,
-  autocompleteError: ImmutablePropTypes.map,
+  autocompleteError: PropTypes.oneOfType([ImmutablePropTypes.map, null]),
   setPlace: PropTypes.func.isRequired,
   place: ImmutablePropTypes.map.isRequired
 };
@@ -62,6 +67,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchAutocomplete,
+      resetAutocomplete,
       setPlace
     },
     dispatch
