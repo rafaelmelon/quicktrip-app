@@ -9,7 +9,7 @@ import {
   GEO_SET_PLACE
 } from "./constant";
 
-import { request, requestJSON } from "utils/fetch";
+import { request } from "utils/fetch";
 
 export const setInitialPosition = payload => ({
   type: GEO_SET_INITIAL_POSITION,
