@@ -1,0 +1,21 @@
+import { fromJS } from "immutable";
+
+import {
+  STATE_GEO_INITIAL_POSITION,
+  STATE_GEO_INITIAL_POSITION_ERROR,
+  STATE_GEO_CURRENT_POSITION,
+  STATE_GEO_LATITUDE,
+  STATE_GEO_LONGITUDE
+} from "./constant";
+
+export const initialState = fromJS({
+  [STATE_GEO_INITIAL_POSITION]: {
+    [STATE_GEO_LATITUDE]: 0,
+    [STATE_GEO_LONGITUDE]: 0
+  },
+  [STATE_GEO_INITIAL_POSITION_ERROR]: null,
+  [STATE_GEO_CURRENT_POSITION]: {
+    [STATE_GEO_LATITUDE]: 0,
+    [STATE_GEO_LONGITUDE]: 0
+  }
+});

@@ -1,5 +1,5 @@
 import App from "./App";
-import Map from "./Map";
+import Home from "./Home";
 
 export { App };
-export { Map };
+export { Home };

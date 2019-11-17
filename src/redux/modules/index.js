@@ -1,7 +1,7 @@
-import { combineReducers } from "redux";
+import { combineReducers } from "redux-immutable";
 
-import { dataReducer } from "./data";
+import { geoReducer } from "./geo";
 
 export const rootReducer = combineReducers({
-  data: dataReducer
+  geo: geoReducer
 });
