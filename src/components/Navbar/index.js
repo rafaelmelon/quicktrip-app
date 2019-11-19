@@ -11,6 +11,7 @@ import { Container, Suggestions, Suggestion } from "./styles";
 const Navbar = ({
   fetchAutocomplete,
   resetAutocomplete,
+  fetchPlaces,
   autocompleteResponse,
   autocompleteFetching,
   autocompleteError,
@@ -27,6 +28,7 @@ const Navbar = ({
   };
 
   const handleClick = item => {
+    fetchPlaces(item);
     setPlace(item);
     setValue(item.get("description"));
     resetAutocomplete();
@@ -65,6 +67,7 @@ const Navbar = ({
 Navbar.propTypes = {
   fetchAutocomplete: PropTypes.func.isRequired,
   resetAutocomplete: PropTypes.func.isRequired,
+  fetchPlaces: PropTypes.func.isRequired,
   autocompleteResponse: ImmutablePropTypes.list.isRequired,
   autocompleteFetching: PropTypes.bool.isRequired,
   autocompleteError: PropTypes.oneOfType([ImmutablePropTypes.map, null]),

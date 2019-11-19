@@ -8,6 +8,10 @@ const API = LOCAL_DOMAINS.includes(window.location.hostname)
 
 export const request = (path, options = {}) => {
   const url = `${API}/${path}`;
+  const settings = {
+    headers: new Headers(),
+    ...options
+  };
 
-  return fetch(url).then(response => response.json());
+  return fetch(url, settings).then(response => response.json());
 };

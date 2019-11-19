@@ -1,9 +1,7 @@
 import { Map, List } from "immutable";
 
 export const isMapContain = map => Map.isMap(map) && map.size > 0;
-
 export const isListContain = list => List.isList(list) && list.size > 0;
-
 export const isArrayContain = array => Array.isArray(array) && array.length > 0;
 
 export const isInList = (list, value, key) => {
@@ -15,7 +13,6 @@ export const isInList = (list, value, key) => {
   }
   return false;
 };
-
 export const findInList = (list, value, key) => {
   if (isListContain(list)) {
     let result = List([]);
@@ -38,7 +35,6 @@ export const isInArray = (array, value, key) => {
   }
   return false;
 };
-
 export const findInArray = (array, value, key) => {
   if (isArrayContain(array)) {
     const result = [];

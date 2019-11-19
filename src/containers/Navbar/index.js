@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import {
   fetchAutocomplete,
   resetAutocomplete,
+  fetchPlaces,
   setPlace,
   selectorAutocompleteResponse,
   selectorAutocompleteFetching,
@@ -23,6 +24,7 @@ class Navbar extends Component {
     const {
       fetchAutocomplete,
       resetAutocomplete,
+      fetchPlaces,
       autocompleteResponse,
       autocompleteFetching,
       autocompleteError,
@@ -35,6 +37,7 @@ class Navbar extends Component {
         {...{
           fetchAutocomplete,
           resetAutocomplete,
+          fetchPlaces,
           autocompleteResponse,
           autocompleteFetching,
           autocompleteError,
@@ -49,6 +52,7 @@ class Navbar extends Component {
 Navbar.propTypes = {
   fetchAutocomplete: PropTypes.func.isRequired,
   resetAutocomplete: PropTypes.func.isRequired,
+  fetchPlaces: PropTypes.func.isRequired,
   autocompleteResponse: ImmutablePropTypes.list.isRequired,
   autocompleteFetching: PropTypes.bool.isRequired,
   autocompleteError: PropTypes.oneOfType([ImmutablePropTypes.map, null]),
@@ -68,6 +72,7 @@ const mapDispatchToProps = dispatch =>
     {
       fetchAutocomplete,
       resetAutocomplete,
+      fetchPlaces,
       setPlace
     },
     dispatch
