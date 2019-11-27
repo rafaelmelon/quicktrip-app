@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   position: relative;
+  align-items: center;
+  display: flex;
   flex: 1;
 `;
 
@@ -22,7 +24,8 @@ export const StyledInput = styled.input`
   box-shadow: none;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.colors.swamp};
-  padding: 6px 12px;
+  padding-right: 20px;
+  padding-left: 12px;
   &::placeholder {
     color: ${({ theme }) => theme.colors.swamp};
   }
@@ -35,6 +38,14 @@ export const StyledInput = styled.input`
   }
 `;
 
-export const Icon = styled.span`
+export const Button = styled.button`
   position: absolute;
+  right: 6px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  > img {
+    width: 25px;
+    height: 25px;
+  }
 `;

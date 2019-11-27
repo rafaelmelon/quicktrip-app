@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { inputType } from "types/forms";
 
-import { Container, Label, StyledInput, Icon } from "./styles";
+import { Container, Label, StyledInput, Button } from "./styles";
 
 const Input = ({
   type,
@@ -11,14 +11,15 @@ const Input = ({
   label,
   disabled,
   input,
-  icon,
+  inputButton,
+  button,
   warning,
   error
 }) => (
   <Container>
     {!!label && <Label>{label}</Label>}
     <StyledInput {...input} {...{ type, placeholder, disabled }} />
-    {icon && <Icon>{icon}</Icon>}
+    {button && <Button onClick={button.onClick}>{button.icon}</Button>}
   </Container>
 );
 
@@ -28,7 +29,10 @@ Input.propTypes = {
   placeholder: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, null]),
   disabled: PropTypes.bool,
-  icon: PropTypes.oneOfType([PropTypes.string, null])
+  button: PropTypes.shape({
+    onClick: PropTypes.func,
+    icon: PropTypes.node
+  })
 };
 
 Input.defaultProps = {
@@ -36,7 +40,7 @@ Input.defaultProps = {
   placeholder: "",
   label: null,
   disabled: false,
-  icon: null
+  button: null
 };
 
 export default Input;

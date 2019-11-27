@@ -1,9 +1,33 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+import { Card } from "components";
 
 import { Container } from "./styles";
 
-const Carousel = () => {
-  return <Container>Carousel</Container>;
+const Carousel = ({ places }) => {
+  const renderPlaces = () => {
+    return places.map(info => {
+      return <Card {...{ info }} />;
+    });
+  };
+
+  return <Container>{renderPlaces()}</Container>;
+};
+
+Carousel.propTypes = {
+  places: PropTypes.arrayOf(PropTypes.shape({}))
+};
+
+Carousel.defaultProps = {
+  places: [
+    {
+      description: "Card 1"
+    },
+    {
+      description: "Card 2"
+    }
+  ]
 };
 
 export default Carousel;

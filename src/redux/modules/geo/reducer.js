@@ -30,12 +30,10 @@ const reducer = createReducer(initialState, {
   [GEO_SET_CURRENT_POSITION_ERROR]: state =>
     state.setIn([STATE_GEO_CURRENT_POSITION, STATE_GEO_ERROR], {}),
 
-  [GEO_SET_AUTOCOMPLETE_RESPONSE]: (state, action) => {
-    const { predictions } = action.payload;
-    return state
-      .setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_RESPONSE], fromJS(predictions))
-      .setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_FETCHING], false);
-  },
+  [GEO_SET_AUTOCOMPLETE_RESPONSE]: (state, { payload }) =>
+    state
+      .setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_RESPONSE], fromJS(payload))
+      .setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_FETCHING], false),
 
   [GEO_SET_AUTOCOMPLETE_FETCHING]: state =>
     state.setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_FETCHING], true),

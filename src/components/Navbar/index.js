@@ -27,11 +27,19 @@ const Navbar = ({
     }
   };
 
-  const handleClick = item => {
+  const handleClickSuggestion = item => {
     fetchPlaces(item);
     setPlace(item);
     setValue(item.get("description"));
     resetAutocomplete();
+  };
+
+  const handleClickSearch = () => {
+    console.log(value);
+    // if (value) {
+    //   fetchPlaces(value);
+    //   resetAutocomplete();
+    // }
   };
 
   const isAutocomplete = isListContain(autocompleteResponse);
@@ -46,6 +54,10 @@ const Navbar = ({
             value
           }}
           placeholder={place.get("description") || "Search location"}
+          button={{
+            onClick: handleClickSearch,
+            icon: <img src={logo} alt="logo" />
+          }}
         />
       </Container>
       {isAutocomplete && (
@@ -53,7 +65,7 @@ const Navbar = ({
           {autocompleteResponse.map(item => (
             <Suggestion
               key={item.get("description")}
-              onClick={() => handleClick(item)}
+              onClick={() => handleClickSuggestion(item)}
             >
               {item.get("description")}
             </Suggestion>
