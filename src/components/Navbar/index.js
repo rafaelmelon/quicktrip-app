@@ -35,11 +35,10 @@ const Navbar = ({
   };
 
   const handleClickSearch = () => {
-    console.log(value);
-    // if (value) {
-    //   fetchPlaces(value);
-    //   resetAutocomplete();
-    // }
+    if (value) {
+      fetchPlaces({ description: value, place_id: null });
+      resetAutocomplete();
+    }
   };
 
   const isAutocomplete = isListContain(autocompleteResponse);

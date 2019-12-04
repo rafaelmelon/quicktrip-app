@@ -47,7 +47,7 @@ export const fetchAutocomplete = payload => dispatch => {
   const options = {
     method: "GET"
   };
-  request(`autocomplete/${payload}`, options)
+  request(`places/autocomplete/${payload}`, options)
     .then(json => dispatch(fetchAutocompleteResponse(json)))
     .catch(error => dispatch(fetchAutocompleteError(error)));
 };
@@ -72,7 +72,7 @@ export const fetchPlaces = payload => dispatch => {
     method: "POST",
     body: JSON.stringify(payload)
   };
-  request("places", options)
+  request("places/search", options)
     .then(json => dispatch(fetchPlacesResponse(json)))
     .catch(error => dispatch(fetchPlacesError(error)));
 };

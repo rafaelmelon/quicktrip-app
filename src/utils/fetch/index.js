@@ -9,7 +9,10 @@ const API = LOCAL_DOMAINS.includes(window.location.hostname)
 export const request = (path, options = {}) => {
   const url = `${API}/${path}`;
   const settings = {
-    headers: new Headers(),
+    method: "GET",
+    headers: new Headers({
+      "Content-Type": "application/json"
+    }),
     ...options
   };
 
