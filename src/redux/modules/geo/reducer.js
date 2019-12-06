@@ -26,15 +26,13 @@ import { createReducer } from "redux/utils";
 const reducer = createReducer(initialState, {
   [GEO_SET_CURRENT_POSITION]: (state, action) =>
     setCurrentPosition(state, action.payload),
-
-  [GEO_SET_CURRENT_POSITION_ERROR]: state =>
-    state.setIn([STATE_GEO_CURRENT_POSITION, STATE_GEO_ERROR], {}),
+  [GEO_SET_CURRENT_POSITION_ERROR]: (state, { payload }) =>
+    state.setIn([STATE_GEO_CURRENT_POSITION, STATE_GEO_ERROR], payload),
 
   [GEO_SET_AUTOCOMPLETE_RESPONSE]: (state, { payload }) =>
     state
       .setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_RESPONSE], fromJS(payload))
       .setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_FETCHING], false),
-
   [GEO_SET_AUTOCOMPLETE_FETCHING]: state =>
     state.setIn([STATE_GEO_AUTOCOMPLETE, STATE_GEO_FETCHING], true),
   [GEO_SET_AUTOCOMPLETE_ERROR]: (state, action) =>

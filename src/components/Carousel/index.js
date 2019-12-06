@@ -8,7 +8,7 @@ import { Container } from "./styles";
 const Carousel = ({ places }) => {
   const renderPlaces = () => {
     return places.map(info => {
-      return <Card {...{ info }} />;
+      return <Card key={info.description} {...{ info }} />;
     });
   };
 

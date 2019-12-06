@@ -55,7 +55,10 @@ Navbar.propTypes = {
   fetchPlaces: PropTypes.func.isRequired,
   autocompleteResponse: ImmutablePropTypes.list.isRequired,
   autocompleteFetching: PropTypes.bool.isRequired,
-  autocompleteError: PropTypes.oneOfType([ImmutablePropTypes.map, null]),
+  autocompleteError: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([null])
+  ]),
   setPlace: PropTypes.func.isRequired,
   place: ImmutablePropTypes.map.isRequired
 };

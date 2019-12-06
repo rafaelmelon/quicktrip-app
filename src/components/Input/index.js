@@ -8,7 +8,6 @@ import { Container, Label, StyledInput, Button } from "./styles";
 const Input = ({
   type,
   placeholder,
-  label,
   disabled,
   input,
   inputButton,
@@ -17,7 +16,6 @@ const Input = ({
   error
 }) => (
   <Container>
-    {!!label && <Label>{label}</Label>}
     <StyledInput {...input} {...{ type, placeholder, disabled }} />
     {button && <Button onClick={button.onClick}>{button.icon}</Button>}
   </Container>
@@ -27,7 +25,6 @@ Input.propTypes = {
   input: inputType.isRequired,
   type: PropTypes.string,
   placeholder: PropTypes.string,
-  label: PropTypes.oneOfType([PropTypes.string, null]),
   disabled: PropTypes.bool,
   button: PropTypes.shape({
     onClick: PropTypes.func,
@@ -38,7 +35,6 @@ Input.propTypes = {
 Input.defaultProps = {
   type: "text",
   placeholder: "",
-  label: null,
   disabled: false,
   button: null
 };

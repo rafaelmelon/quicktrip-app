@@ -8,7 +8,8 @@ import {
   setCurrentPosition,
   setCurrentPositionError,
   selectorCurrentPosition,
-  selectorCurrentPositionError
+  selectorCurrentPositionError,
+  fetchPlaces
 } from "redux/modules/geo";
 
 import { Map, Carousel } from "components";
@@ -34,7 +35,9 @@ class Home extends Component {
   }
 
   geoSuccess = position => {
-    const { setCurrentPosition } = this.props;
+    const { setCurrentPosition, fetchPlaces } = this.props;
+
+    fetchPlaces({ name: null, position });
 
     this.positionInterval = setInterval(
       () =>
@@ -48,11 +51,11 @@ class Home extends Component {
 
   geoError = error => {
     const { setCurrentPositionError } = this.props;
-    setCurrentPositionError(error);
+    setCurrentPositionError(error.message);
   };
 
   render() {
-    const { currentPosition } = this.props;
+    const { currentPosition, currentPositionError } = this.props;
 
     return (
       <>
@@ -65,9 +68,13 @@ class Home extends Component {
 
 Home.propTypes = {
   currentPosition: ImmutablePropTypes.map.isRequired,
-  currentPositionError: ImmutablePropTypes.map,
+  currentPositionError: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([null])
+  ]),
   setCurrentPosition: PropTypes.func.isRequired,
-  setCurrentPositionError: PropTypes.func.isRequired
+  setCurrentPositionError: PropTypes.func.isRequired,
+  fetchPlaces: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -79,7 +86,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       setCurrentPosition,
-      setCurrentPositionError
+      setCurrentPositionError,
+      fetchPlaces
     },
     dispatch
   );

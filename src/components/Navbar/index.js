@@ -27,16 +27,26 @@ const Navbar = ({
     }
   };
 
-  const handleClickSuggestion = item => {
-    fetchPlaces(item);
-    setPlace(item);
-    setValue(item.get("description"));
+  const handleClickSuggestion = value => {
+    const center = value.get("center");
+    const name = value.get("place_name");
+    const place = {
+      name,
+      position: {
+        latitude: center[0],
+        longitude: center[1]
+      }
+    };
+
+    fetchPlaces(place);
+    setPlace(place);
+    setValue(name);
     resetAutocomplete();
   };
 
   const handleClickSearch = () => {
     if (value) {
-      fetchPlaces({ description: value, place_id: null });
+      fetchPlaces({ name: value, position: null });
       resetAutocomplete();
     }
   };
@@ -52,7 +62,7 @@ const Navbar = ({
             onChange: handleChange,
             value
           }}
-          placeholder={place.get("description") || "Search location"}
+          placeholder={"Search location"}
           button={{
             onClick: handleClickSearch,
             icon: <img src={logo} alt="logo" />
@@ -63,10 +73,10 @@ const Navbar = ({
         <Suggestions>
           {autocompleteResponse.map(item => (
             <Suggestion
-              key={item.get("description")}
+              key={item.get("place_name")}
               onClick={() => handleClickSuggestion(item)}
             >
-              {item.get("description")}
+              {item.get("place_name")}
             </Suggestion>
           ))}
         </Suggestions>
@@ -81,7 +91,10 @@ Navbar.propTypes = {
   fetchPlaces: PropTypes.func.isRequired,
   autocompleteResponse: ImmutablePropTypes.list.isRequired,
   autocompleteFetching: PropTypes.bool.isRequired,
-  autocompleteError: PropTypes.oneOfType([ImmutablePropTypes.map, null]),
+  autocompleteError: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([null])
+  ]),
   setPlace: PropTypes.func.isRequired,
   place: ImmutablePropTypes.map.isRequired
 };

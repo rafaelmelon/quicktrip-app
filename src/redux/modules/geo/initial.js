@@ -15,7 +15,8 @@ import {
 export const initialState = fromJS({
   [STATE_GEO_CURRENT_POSITION]: {
     [STATE_GEO_LATITUDE]: 0,
-    [STATE_GEO_LONGITUDE]: 0
+    [STATE_GEO_LONGITUDE]: 0,
+    [STATE_GEO_ERROR]: null
   },
   [STATE_GEO_AUTOCOMPLETE]: {
     [STATE_GEO_RESPONSE]: [],
