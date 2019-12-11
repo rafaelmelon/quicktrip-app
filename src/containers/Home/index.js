@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import ImmutablePropTypes from "immutable-prop-types";
 import { bindActionCreators } from "redux";
@@ -9,6 +9,7 @@ import {
   setCurrentPositionError,
   selectorCurrentPosition,
   selectorCurrentPositionError,
+  selectorPlacesResponse,
   fetchPlaces
 } from "redux/modules/geo";
 
@@ -34,17 +35,17 @@ class Home extends Component {
     }
   }
 
-  geoSuccess = position => {
+  geoSuccess = result => {
     const { setCurrentPosition, fetchPlaces } = this.props;
+    const position = {
+      latitude: result.coords.latitude,
+      longitude: result.coords.longitude
+    };
 
     fetchPlaces({ name: null, position });
 
     this.positionInterval = setInterval(
-      () =>
-        setCurrentPosition({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        }),
+      () => setCurrentPosition(position),
       5000
     );
   };
@@ -55,12 +56,16 @@ class Home extends Component {
   };
 
   render() {
-    const { currentPosition, currentPositionError } = this.props;
+    const {
+      currentPosition,
+      currentPositionError,
+      placesResponse
+    } = this.props;
 
     return (
       <>
-        <Map {...{ currentPosition }} />
-        <Carousel />
+        <Map {...{ currentPosition, placesResponse }} />
+        <Carousel {...{ placesResponse }} />
       </>
     );
   }
@@ -74,12 +79,14 @@ Home.propTypes = {
   ]),
   setCurrentPosition: PropTypes.func.isRequired,
   setCurrentPositionError: PropTypes.func.isRequired,
-  fetchPlaces: PropTypes.func.isRequired
+  fetchPlaces: PropTypes.func.isRequired,
+  placesResponse: ImmutablePropTypes.list.isRequired
 };
 
 const mapStateToProps = state => ({
   currentPosition: selectorCurrentPosition(state),
-  currentPositionError: selectorCurrentPositionError(state)
+  currentPositionError: selectorCurrentPositionError(state),
+  placesResponse: selectorPlacesResponse(state)
 });
 
 const mapDispatchToProps = dispatch =>

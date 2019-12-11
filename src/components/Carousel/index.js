@@ -1,14 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import ImmutablePropTypes from "immutable-prop-types";
+import { List } from "immutable";
 
 import { Card } from "components";
 
 import { Container } from "./styles";
 
-const Carousel = ({ places }) => {
+const Carousel = ({ placesResponse }) => {
   const renderPlaces = () => {
-    return places.map(info => {
-      return <Card key={info.description} {...{ info }} />;
+    return placesResponse.map((place, placeIndex) => {
+      return <Card key={place.get("id")} {...{ place, placeIndex }} />;
     });
   };
 
@@ -16,18 +18,11 @@ const Carousel = ({ places }) => {
 };
 
 Carousel.propTypes = {
-  places: PropTypes.arrayOf(PropTypes.shape({}))
+  placesResponse: ImmutablePropTypes.list
 };
 
 Carousel.defaultProps = {
-  places: [
-    {
-      description: "Card 1"
-    },
-    {
-      description: "Card 2"
-    }
-  ]
+  placesResponse: List()
 };
 
 export default Carousel;

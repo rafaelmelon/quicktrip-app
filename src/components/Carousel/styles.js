@@ -2,5 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  padding: 15px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 16px;
 `;

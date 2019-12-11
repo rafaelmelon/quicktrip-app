@@ -24,7 +24,7 @@ export const initialState = fromJS({
     [STATE_GEO_ERROR]: null
   },
   [STATE_GEO_PLACES]: {
-    [STATE_GEO_RESPONSE]: {},
+    [STATE_GEO_RESPONSE]: [],
     [STATE_GEO_FETCHING]: false,
     [STATE_GEO_ERROR]: null
   },

@@ -1,13 +1,20 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background-color: tomato;
-  height: 200px;
   width: 200px;
-  padding: 15px;
-  margin-right: 5px;
+  flex: 0 0 auto;
+  margin-right: 16px;
 `;
 
 export const Description = styled.div`
-  background-color: yellow;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ContainerImg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  overflow: hidden;
 `;

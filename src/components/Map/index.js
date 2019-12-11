@@ -8,34 +8,39 @@ import ReactMapGL, {
   GeolocateControl
 } from "react-map-gl";
 
+import { isListContain } from "utils/helpers";
 import marker from "images/marker.png";
 import { API_KEY_MAPBOX } from "constants/api";
 
 import { MarkerUser } from "./styles";
 
-const Map = ({ currentPosition }) => {
+const Map = ({ currentPosition, placesResponse }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mapStyles, setMapStyles] = useState(
     "mapbox://styles/mapbox/outdoors-v11"
   );
   const [viewport, setViewport] = useState({
-    latitude: 29.976854499999998,
-    longitude: 31.144190799999997,
+    latitude: 40.415363,
+    longitude: -3.707398,
     zoom: 9
   });
 
   const mapRef = useRef(null);
-  // this runs after mapRef was mounted
+
   useLayoutEffect(() => {
     const map = mapRef.current.getMap();
-    if (isLoaded) {
-      /* map.on here to whatever you want, I am handling style toggle from here */
+    if (isLoaded && currentPosition.get("latitude") !== 0) {
+      setViewport(prevValues => ({
+        ...prevValues,
+        latitude: currentPosition.get("latitude"),
+        longitude: currentPosition.get("longitude")
+      }));
     }
 
     return () => {
       /* map.off everything */
     };
-  });
+  }, [isLoaded, currentPosition]);
 
   const handleOnLoad = e => {
     setMapStyles(e.target.style.stylesheet);
@@ -54,6 +59,19 @@ const Map = ({ currentPosition }) => {
       </Marker>
     );
   };
+
+  const renderMarkers = () =>
+    placesResponse.map(place => (
+      <Marker
+        key={place.getIn(["geometry", "location", "lat"])}
+        latitude={place.getIn(["geometry", "location", "lat"])}
+        longitude={place.getIn(["geometry", "location", "lng"])}
+      >
+        <MarkerUser>
+          <img src={marker} alt="marker" />
+        </MarkerUser>
+      </Marker>
+    ));
 
   const geojson = {
     type: "FeatureCollection",
@@ -179,6 +197,8 @@ const Map = ({ currentPosition }) => {
     return <Layer {...parkLayer} />;
   };
 
+  const isPlacesResponse = isListContain(placesResponse);
+
   return (
     <ReactMapGL
       {...viewport}
@@ -233,13 +253,15 @@ const Map = ({ currentPosition }) => {
           }}
         />
       </Source>
+      {isPlacesResponse && renderMarkers()}
       {renderCurrentLocationMarker()}
     </ReactMapGL>
   );
 };
 
 Map.propTypes = {
-  currentPosition: ImmutablePropTypes.map
+  currentPosition: ImmutablePropTypes.map,
+  placesResponse: ImmutablePropTypes.map
 };
 
 export default Map;
