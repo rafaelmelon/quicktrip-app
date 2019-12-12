@@ -28,13 +28,13 @@ const Navbar = ({
   };
 
   const handleClickSuggestion = value => {
-    const center = value.get("center");
+    const coordinates = value.getIn(["geometry", "coordinates"]);
     const name = value.get("place_name");
     const place = {
       name,
       position: {
-        latitude: center[0],
-        longitude: center[1]
+        latitude: coordinates.get(1),
+        longitude: coordinates.get(0)
       }
     };
 

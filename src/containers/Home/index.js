@@ -10,6 +10,7 @@ import {
   selectorCurrentPosition,
   selectorCurrentPositionError,
   selectorPlacesResponse,
+  selectorPlacesCenter,
   fetchPlaces
 } from "redux/modules/geo";
 
@@ -42,7 +43,7 @@ class Home extends Component {
       longitude: result.coords.longitude
     };
 
-    fetchPlaces({ name: null, position });
+    fetchPlaces({ name: "Madrid", position });
 
     this.positionInterval = setInterval(
       () => setCurrentPosition(position),
@@ -59,12 +60,13 @@ class Home extends Component {
     const {
       currentPosition,
       currentPositionError,
-      placesResponse
+      placesResponse,
+      placesCenter
     } = this.props;
 
     return (
       <>
-        <Map {...{ currentPosition, placesResponse }} />
+        <Map {...{ currentPosition, placesResponse, placesCenter }} />
         <Carousel {...{ placesResponse }} />
       </>
     );
@@ -80,13 +82,15 @@ Home.propTypes = {
   setCurrentPosition: PropTypes.func.isRequired,
   setCurrentPositionError: PropTypes.func.isRequired,
   fetchPlaces: PropTypes.func.isRequired,
-  placesResponse: ImmutablePropTypes.list.isRequired
+  placesResponse: ImmutablePropTypes.list.isRequired,
+  placesCenter: ImmutablePropTypes.map.isRequired
 };
 
 const mapStateToProps = state => ({
   currentPosition: selectorCurrentPosition(state),
   currentPositionError: selectorCurrentPositionError(state),
-  placesResponse: selectorPlacesResponse(state)
+  placesResponse: selectorPlacesResponse(state),
+  placesCenter: selectorPlacesCenter(state)
 });
 
 const mapDispatchToProps = dispatch =>

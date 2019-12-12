@@ -17,7 +17,8 @@ import {
   STATE_GEO_CURRENT_POSITION,
   STATE_GEO_AUTOCOMPLETE,
   STATE_GEO_PLACE,
-  STATE_GEO_PLACES
+  STATE_GEO_PLACES,
+  STATE_GEO_CENTER
 } from "./constant";
 import { initialState } from "./initial";
 import { setCurrentPosition } from "./utils";
@@ -42,9 +43,10 @@ const reducer = createReducer(initialState, {
 
   [GEO_SET_PLACES_ERROR]: state =>
     state.setIn([STATE_GEO_PLACES, STATE_GEO_ERROR], {}),
-  [GEO_SET_PLACES_RESPONSE]: (state, action) =>
+  [GEO_SET_PLACES_RESPONSE]: (state, { payload }) =>
     state
-      .setIn([STATE_GEO_PLACES, STATE_GEO_RESPONSE], fromJS(action.payload))
+      .setIn([STATE_GEO_PLACES, STATE_GEO_RESPONSE], fromJS(payload.result))
+      .setIn([STATE_GEO_PLACES, STATE_GEO_CENTER], fromJS(payload.center))
       .setIn([STATE_GEO_PLACES, STATE_GEO_FETCHING], false),
   [GEO_SET_PLACES_FETCHING]: state =>
     state.setIn([STATE_GEO_PLACES, STATE_GEO_FETCHING], true),

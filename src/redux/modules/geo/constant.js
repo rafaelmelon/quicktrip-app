@@ -19,3 +19,4 @@ export const STATE_GEO_CURRENT_POSITION = "currentPosition";
 export const STATE_GEO_AUTOCOMPLETE = "autocomplete";
 export const STATE_GEO_PLACE = "place";
 export const STATE_GEO_PLACES = "places";
+export const STATE_GEO_CENTER = "center";

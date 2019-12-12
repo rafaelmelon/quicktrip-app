@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import ImmutablePropTypes from "immutable-prop-types";
 import ReactMapGL, {
@@ -14,7 +14,7 @@ import { API_KEY_MAPBOX } from "constants/api";
 
 import { MarkerUser } from "./styles";
 
-const Map = ({ currentPosition, placesResponse }) => {
+const Map = ({ currentPosition, placesResponse, placesCenter }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mapStyles, setMapStyles] = useState(
     "mapbox://styles/mapbox/outdoors-v11"
@@ -26,6 +26,14 @@ const Map = ({ currentPosition, placesResponse }) => {
   });
 
   const mapRef = useRef(null);
+
+  useEffect(() => {
+    setViewport(prevValues => ({
+      ...prevValues,
+      latitude: placesCenter.get("latitude"),
+      longitude: placesCenter.get("longitude")
+    }));
+  }, [placesCenter]);
 
   useLayoutEffect(() => {
     const map = mapRef.current.getMap();
@@ -261,7 +269,8 @@ const Map = ({ currentPosition, placesResponse }) => {
 
 Map.propTypes = {
   currentPosition: ImmutablePropTypes.map,
-  placesResponse: ImmutablePropTypes.map
+  placesResponse: ImmutablePropTypes.list,
+  placesCenter: ImmutablePropTypes.map
 };
 
 export default Map;

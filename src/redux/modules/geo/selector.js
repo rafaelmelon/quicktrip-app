@@ -6,7 +6,8 @@ import {
   STATE_GEO_CURRENT_POSITION,
   STATE_GEO_AUTOCOMPLETE,
   STATE_GEO_PLACE,
-  STATE_GEO_PLACES
+  STATE_GEO_PLACES,
+  STATE_GEO_CENTER
 } from "./constant";
 import { selectorState } from "redux/utils";
 
@@ -30,6 +31,8 @@ export const selectorPlaces = state =>
   selectorState(selectorGeo(state), STATE_GEO_PLACES);
 export const selectorPlacesResponse = state =>
   selectorState(selectorPlaces(state), STATE_GEO_RESPONSE);
+export const selectorPlacesCenter = state =>
+  selectorState(selectorPlaces(state), STATE_GEO_CENTER);
 export const selectorPlacesFetching = state =>
   selectorState(selectorPlaces(state), STATE_GEO_FETCHING);
 export const selectorPlacesError = state =>
