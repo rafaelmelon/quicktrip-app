@@ -1,5 +1,13 @@
 import React from "react";
 
-const Loader = () => <div>Loader</div>;
+import marker from "images/marker.png";
+
+import { Container } from "./styles";
+
+const Loader = () => (
+  <Container>
+    <img src={marker} alt="marker" />
+  </Container>
+);
 
 export default Loader;

@@ -20,8 +20,8 @@ const Map = ({ currentPosition, placesResponse, placesCenter }) => {
     "mapbox://styles/mapbox/outdoors-v11"
   );
   const [viewport, setViewport] = useState({
-    latitude: 40.415363,
-    longitude: -3.707398,
+    latitude: currentPosition.latitude,
+    longitude: currentPosition.longitude,
     zoom: 9
   });
 
@@ -37,11 +37,11 @@ const Map = ({ currentPosition, placesResponse, placesCenter }) => {
 
   useLayoutEffect(() => {
     const map = mapRef.current.getMap();
-    if (isLoaded && currentPosition.get("latitude") !== 0) {
+    if (isLoaded) {
       setViewport(prevValues => ({
         ...prevValues,
-        latitude: currentPosition.get("latitude"),
-        longitude: currentPosition.get("longitude")
+        latitude: currentPosition.latitude,
+        longitude: currentPosition.longitude
       }));
     }
 
@@ -58,8 +58,8 @@ const Map = ({ currentPosition, placesResponse, placesCenter }) => {
   const renderCurrentLocationMarker = () => {
     return (
       <Marker
-        latitude={currentPosition.get("latitude")}
-        longitude={currentPosition.get("longitude")}
+        latitude={currentPosition.latitude}
+        longitude={currentPosition.longitude}
       >
         <MarkerUser>
           <img src={marker} alt="marker" />
@@ -268,7 +268,7 @@ const Map = ({ currentPosition, placesResponse, placesCenter }) => {
 };
 
 Map.propTypes = {
-  currentPosition: ImmutablePropTypes.map,
+  currentPosition: PropTypes.shape({}),
   placesResponse: ImmutablePropTypes.list,
   placesCenter: ImmutablePropTypes.map
 };

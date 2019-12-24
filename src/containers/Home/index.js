@@ -14,12 +14,17 @@ import {
   fetchPlaces
 } from "redux/modules/geo";
 
-import { Map, Carousel } from "components";
+import { Map, Carousel, Loader } from "components";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.positionInterval = null;
+
+    this.state = {
+      isGeoUserResponse: false,
+      defaultPosition: { latitude: 40.415363, longitude: -3.707398 }
+    };
   }
 
   componentDidMount() {
@@ -43,8 +48,10 @@ class Home extends Component {
       longitude: result.coords.longitude
     };
 
-    fetchPlaces({ name: "Madrid", position });
-
+    fetchPlaces({ name: null, position });
+    this.setState({
+      isGeoUserResponse: true
+    });
     this.positionInterval = setInterval(
       () => setCurrentPosition(position),
       5000
@@ -54,19 +61,41 @@ class Home extends Component {
   geoError = error => {
     const { setCurrentPositionError } = this.props;
     setCurrentPositionError(error.message);
+    this.setState({
+      isGeoUserResponse: true
+    });
+  };
+
+  setCurrentPosition = () => {
+    const { currentPosition, currentPositionError } = this.props;
+    const { defaultPosition } = this.state;
+
+    if (currentPositionError) {
+      return {
+        latitude: defaultPosition.latitude,
+        longitude: defaultPosition.longitude
+      };
+    }
+    return {
+      latitude: currentPosition.get("latitude"),
+      longitude: currentPosition.get("longitude")
+    };
   };
 
   render() {
-    const {
-      currentPosition,
-      currentPositionError,
-      placesResponse,
-      placesCenter
-    } = this.props;
+    const { placesResponse, placesCenter } = this.props;
+    const { isGeoUserResponse } = this.state;
+
+    if (!isGeoUserResponse) {
+      return <Loader />;
+    }
 
     return (
       <>
-        <Map {...{ currentPosition, placesResponse, placesCenter }} />
+        <Map
+          currentPosition={this.setCurrentPosition()}
+          {...{ placesResponse, placesCenter }}
+        />
         <Carousel {...{ placesResponse }} />
       </>
     );
