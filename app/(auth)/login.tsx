@@ -30,7 +30,12 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email.trim().toLowerCase(), password);
-      router.replace("/(tabs)/explore");
+      const user = useAuthStore.getState().user;
+      if (user?.onboardingCompleted) {
+        router.replace("/(tabs)/explore");
+      } else {
+        router.replace("/(onboarding)/welcome");
+      }
     } catch (err: any) {
       Alert.alert("Login failed", err.message);
     } finally {

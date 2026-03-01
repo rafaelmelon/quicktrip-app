@@ -1,105 +1,221 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
+  ScrollView,
+  TouchableOpacity,
   Alert,
   Platform,
 } from "react-native";
-import MapView, { Marker, Region } from "react-native-maps";
-import * as Location from "expo-location";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, spacing, fontSize, borderRadius } from "../../src/constants/theme";
-import { Button } from "../../src/components/Button";
+import DateTimePicker, {
+  type DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { useAuthStore } from "../../src/stores/auth.store";
+import { Button } from "../../src/components/Button";
+import { colors, spacing, fontSize, borderRadius } from "../../src/constants/theme";
 
-const DEFAULT_REGION: Region = {
-  latitude: 41.387,
-  longitude: 2.17,
-  latitudeDelta: 0.05,
-  longitudeDelta: 0.05,
-};
+const GOOGLE_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY || "";
+
+interface LocationData {
+  name: string;
+  lat: number;
+  lng: number;
+}
 
 export default function ExploreScreen() {
   const user = useAuthStore((s) => s.user);
-  const mapRef = useRef<MapView>(null);
-  const [region, setRegion] = useState<Region>(DEFAULT_REGION);
-  const [userLocation, setUserLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") return;
+  const [origin, setOrigin] = useState<LocationData | null>(null);
+  const [destination, setDestination] = useState<LocationData | null>(null);
+  const [departureTime, setDepartureTime] = useState(() => {
+    const d = new Date();
+    d.setMinutes(0, 0, 0);
+    d.setHours(d.getHours() + 1);
+    return d;
+  });
+  const [arrivalTime, setArrivalTime] = useState(() => {
+    const d = new Date();
+    d.setMinutes(0, 0, 0);
+    d.setHours(d.getHours() + 4);
+    return d;
+  });
+  const [showDeparturePicker, setShowDeparturePicker] = useState(false);
+  const [showArrivalPicker, setShowArrivalPicker] = useState(false);
 
-      const loc = await Location.getCurrentPositionAsync({});
-      const coords = {
-        latitude: loc.coords.latitude,
-        longitude: loc.coords.longitude,
-      };
-      setUserLocation(coords);
-      setRegion({ ...coords, latitudeDelta: 0.04, longitudeDelta: 0.04 });
-    })();
-  }, []);
+  const formatTime = (d: Date) =>
+    d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-  function goToMyLocation() {
-    if (userLocation && mapRef.current) {
-      mapRef.current.animateToRegion(
-        { ...userLocation, latitudeDelta: 0.02, longitudeDelta: 0.02 },
-        600
-      );
+  function handleDepartureChange(_: DateTimePickerEvent, date?: Date) {
+    setShowDeparturePicker(Platform.OS === "ios");
+    if (date) setDepartureTime(date);
+  }
+
+  function handleArrivalChange(_: DateTimePickerEvent, date?: Date) {
+    setShowArrivalPicker(Platform.OS === "ios");
+    if (date) setArrivalTime(date);
+  }
+
+  function handlePlanRoute() {
+    if (!origin || !destination) {
+      Alert.alert("Missing info", "Please select both origin and destination");
+      return;
     }
+    if (arrivalTime <= departureTime) {
+      Alert.alert("Invalid times", "Arrival must be after departure");
+      return;
+    }
+
+    const diffMs = arrivalTime.getTime() - departureTime.getTime();
+    const estimatedMinutes = Math.round(diffMs / 60000);
+
+    router.push({
+      pathname: "/route/plan",
+      params: {
+        originName: origin.name,
+        originLat: origin.lat.toString(),
+        originLng: origin.lng.toString(),
+        destinationName: destination.name,
+        destinationLat: destination.lat.toString(),
+        destinationLng: destination.lng.toString(),
+        departureTime: formatTime(departureTime),
+        arrivalTime: formatTime(arrivalTime),
+        estimatedMinutes: estimatedMinutes.toString(),
+        transportMode: user?.transportMode || "walking",
+        interests: (user?.interests || []).join(","),
+      },
+    });
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.greeting}>
-        <Text style={styles.greetingText}>
-          Hello, <Text style={styles.username}>{user?.username}</Text>
-        </Text>
-        <Text style={styles.hint}>Explore the map to plan your next trip</Text>
-      </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scroll}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={styles.greeting}>
+        Plan your <Text style={styles.bold}>route</Text>
+      </Text>
+      <Text style={styles.subtitle}>
+        Choose origin, destination, and time — we'll find the best stops for you
+      </Text>
 
-      <View style={styles.mapContainer}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={region}
-          showsUserLocation
-          showsMyLocationButton={false}
-          mapType={Platform.OS === "ios" ? "mutedStandard" : "standard"}
-        >
-          {userLocation && (
-            <Marker
-              coordinate={userLocation}
-              title="You are here"
-            >
-              <View style={styles.marker}>
-                <Ionicons name="navigate" size={18} color="#fff" />
-              </View>
-            </Marker>
-          )}
-        </MapView>
-
-        <View style={styles.mapOverlay}>
-          <Button
-            title="My Location"
-            variant="outline"
-            onPress={goToMyLocation}
-            style={styles.locationBtn}
-          />
+      <View style={styles.card}>
+        <View style={styles.fieldHeader}>
+          <Ionicons name="radio-button-on" size={16} color={colors.success} />
+          <Text style={styles.fieldLabel}>Origin</Text>
         </View>
+        <GooglePlacesAutocomplete
+          placeholder="Where are you starting?"
+          onPress={(data, details) => {
+            if (details?.geometry) {
+              setOrigin({
+                name: data.description,
+                lat: details.geometry.location.lat,
+                lng: details.geometry.location.lng,
+              });
+            }
+          }}
+          query={{ key: GOOGLE_KEY, language: "en", types: "geocode" }}
+          fetchDetails
+          enablePoweredByContainer={false}
+          styles={{
+            textInput: styles.placeInput,
+            listView: styles.placeList,
+          }}
+        />
+
+        <TouchableOpacity
+          style={styles.timeRow}
+          onPress={() => setShowDeparturePicker(true)}
+        >
+          <Ionicons name="time-outline" size={18} color={colors.primary} />
+          <Text style={styles.timeLabel}>Departure</Text>
+          <Text style={styles.timeValue}>{formatTime(departureTime)}</Text>
+        </TouchableOpacity>
+        {showDeparturePicker && (
+          <DateTimePicker
+            value={departureTime}
+            mode="time"
+            minuteInterval={15}
+            onChange={handleDepartureChange}
+          />
+        )}
+
+        <View style={styles.divider} />
+
+        <View style={styles.fieldHeader}>
+          <Ionicons name="flag" size={16} color={colors.error} />
+          <Text style={styles.fieldLabel}>Destination</Text>
+        </View>
+        <GooglePlacesAutocomplete
+          placeholder="Where are you going?"
+          onPress={(data, details) => {
+            if (details?.geometry) {
+              setDestination({
+                name: data.description,
+                lat: details.geometry.location.lat,
+                lng: details.geometry.location.lng,
+              });
+            }
+          }}
+          query={{ key: GOOGLE_KEY, language: "en", types: "geocode" }}
+          fetchDetails
+          enablePoweredByContainer={false}
+          styles={{
+            textInput: styles.placeInput,
+            listView: styles.placeList,
+          }}
+        />
+
+        <TouchableOpacity
+          style={styles.timeRow}
+          onPress={() => setShowArrivalPicker(true)}
+        >
+          <Ionicons name="time-outline" size={18} color={colors.error} />
+          <Text style={styles.timeLabel}>Arrival</Text>
+          <Text style={styles.timeValue}>{formatTime(arrivalTime)}</Text>
+        </TouchableOpacity>
+        {showArrivalPicker && (
+          <DateTimePicker
+            value={arrivalTime}
+            mode="time"
+            minuteInterval={15}
+            onChange={handleArrivalChange}
+          />
+        )}
       </View>
 
-      <View style={styles.tipCard}>
-        <Ionicons name="bulb-outline" size={20} color={colors.warning} />
-        <Text style={styles.tipText}>
-          Go to "My Routes" tab to create and save travel routes with stops along the way.
-        </Text>
-      </View>
-    </View>
+      {origin && destination && (
+        <View style={styles.summary}>
+          <View style={styles.summaryRow}>
+            <Ionicons name={user?.transportMode === "walking" ? "walk" : user?.transportMode === "transit" ? "bus" : "car"} size={16} color={colors.primary} />
+            <Text style={styles.summaryText}>
+              {Math.round(
+                (arrivalTime.getTime() - departureTime.getTime()) / 60000
+              )}{" "}
+              min available
+            </Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Ionicons name="star" size={16} color={colors.warning} />
+            <Text style={styles.summaryText}>
+              {user?.interests.join(", ")}
+            </Text>
+          </View>
+        </View>
+      )}
+
+      <Button
+        title="Find route & places"
+        onPress={handlePlanRoute}
+        disabled={!origin || !destination}
+        style={styles.planBtn}
+      />
+    </ScrollView>
   );
 }
 
@@ -108,66 +224,98 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  scroll: {
+    padding: spacing.lg,
+    paddingBottom: spacing.xxl,
+  },
   greeting: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
-  },
-  greetingText: {
-    fontSize: fontSize.xl,
+    fontSize: fontSize.xxl,
     color: colors.text,
+    marginBottom: spacing.xs,
   },
-  username: {
-    fontWeight: "700",
+  bold: {
+    fontWeight: "800",
   },
-  hint: {
+  subtitle: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
-    marginTop: spacing.xs,
+    marginBottom: spacing.lg,
+    lineHeight: 20,
   },
-  mapContainer: {
-    flex: 1,
-    margin: spacing.md,
-    borderRadius: borderRadius.lg,
-    overflow: "hidden",
-  },
-  map: {
-    flex: 1,
-  },
-  mapOverlay: {
-    position: "absolute",
-    bottom: spacing.md,
-    right: spacing.md,
-  },
-  locationBtn: {
+  card: {
     backgroundColor: colors.surface,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    minHeight: 40,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  marker: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 3,
-    borderColor: "#fff",
-  },
-  tipCard: {
+  fieldHeader: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
-    margin: spacing.md,
-    marginTop: 0,
-    padding: spacing.md,
-    backgroundColor: colors.warning + "12",
-    borderRadius: borderRadius.md,
+    marginBottom: spacing.xs,
+    marginTop: spacing.sm,
   },
-  tipText: {
-    flex: 1,
+  fieldLabel: {
+    fontSize: fontSize.sm,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  placeInput: {
+    backgroundColor: colors.background,
+    borderRadius: borderRadius.md,
     fontSize: fontSize.sm,
     color: colors.text,
+    paddingHorizontal: spacing.md,
+    height: 44,
+  },
+  placeList: {
+    borderRadius: borderRadius.md,
+    zIndex: 10,
+  },
+  timeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  timeLabel: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    flex: 1,
+  },
+  timeValue: {
+    fontSize: fontSize.md,
+    fontWeight: "600",
+    color: colors.primary,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: spacing.sm,
+  },
+  summary: {
+    marginTop: spacing.md,
+    backgroundColor: colors.primary + "08",
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  summaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  summaryText: {
+    fontSize: fontSize.sm,
+    color: colors.text,
+    textTransform: "capitalize",
+  },
+  planBtn: {
+    marginTop: spacing.lg,
   },
 });

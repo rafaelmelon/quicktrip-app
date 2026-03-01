@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { User } from "../types";
+import type { User, OnboardingInput } from "../types";
 import * as authService from "../services/auth";
 import { getStoredTokens } from "../services/api";
 
@@ -11,6 +11,7 @@ interface AuthState {
   initialize: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, username: string, password: string) => Promise<void>;
+  completeOnboarding: (input: OnboardingInput) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -41,6 +42,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   signup: async (email, username, password) => {
     const { user } = await authService.signup(email, username, password);
     set({ user, isAuthenticated: true });
+  },
+
+  completeOnboarding: async (input) => {
+    const user = await authService.completeOnboarding(input);
+    set({ user });
   },
 
   logout: async () => {

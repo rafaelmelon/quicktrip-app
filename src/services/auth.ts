@@ -1,5 +1,5 @@
 import { apiFetch, storeTokens, clearTokens } from "./api";
-import type { AuthResponse, User } from "../types";
+import type { AuthResponse, User, OnboardingInput } from "../types";
 
 export async function login(
   email: string,
@@ -32,4 +32,13 @@ export async function logout(): Promise<void> {
 
 export async function getMe(): Promise<User> {
   return apiFetch<User>("/auth/me");
+}
+
+export async function completeOnboarding(
+  input: OnboardingInput
+): Promise<User> {
+  return apiFetch<User>("/auth/onboarding", {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
 }

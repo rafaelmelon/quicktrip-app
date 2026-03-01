@@ -4,7 +4,7 @@ import { useAuthStore } from "../src/stores/auth.store";
 import { colors } from "../src/constants/theme";
 
 export default function Index() {
-  const { isLoading, isAuthenticated } = useAuthStore();
+  const { isLoading, isAuthenticated, user } = useAuthStore();
 
   if (isLoading) {
     return (
@@ -14,11 +14,15 @@ export default function Index() {
     );
   }
 
-  if (isAuthenticated) {
-    return <Redirect href="/(tabs)/explore" />;
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/login" />;
   }
 
-  return <Redirect href="/(auth)/login" />;
+  if (!user?.onboardingCompleted) {
+    return <Redirect href="/(onboarding)/welcome" />;
+  }
+
+  return <Redirect href="/(tabs)/explore" />;
 }
 
 const styles = StyleSheet.create({
